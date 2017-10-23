@@ -44,12 +44,12 @@
         "source": "C:\\Users\\Benjamin\\.android\\build-cache\\c6857765c5611368c8499ec4dfe5c7f5f288a91d\\output\\res\\drawable-hdpi-v4\\abc_btn_check_to_on_mtrl_000.png"
     },
     {
-        "merged": "C:\\Wk\\Ericsson\\AndroidClient2\\libraries\\analytics\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-hdpi-v4\\abc_btn_switch_to_on_mtrl_00012.9.png",
-        "source": "C:\\Users\\Benjamin\\.android\\build-cache\\c6857765c5611368c8499ec4dfe5c7f5f288a91d\\output\\res\\drawable-hdpi-v4\\abc_btn_switch_to_on_mtrl_00012.9.png"
-    },
-    {
         "merged": "C:\\Wk\\Ericsson\\AndroidClient2\\libraries\\analytics\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-hdpi-v4\\abc_switch_track_mtrl_alpha.9.png",
         "source": "C:\\Users\\Benjamin\\.android\\build-cache\\c6857765c5611368c8499ec4dfe5c7f5f288a91d\\output\\res\\drawable-hdpi-v4\\abc_switch_track_mtrl_alpha.9.png"
+    },
+    {
+        "merged": "C:\\Wk\\Ericsson\\AndroidClient2\\libraries\\analytics\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-hdpi-v4\\abc_btn_switch_to_on_mtrl_00012.9.png",
+        "source": "C:\\Users\\Benjamin\\.android\\build-cache\\c6857765c5611368c8499ec4dfe5c7f5f288a91d\\output\\res\\drawable-hdpi-v4\\abc_btn_switch_to_on_mtrl_00012.9.png"
     },
     {
         "merged": "C:\\Wk\\Ericsson\\AndroidClient2\\libraries\\analytics\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-hdpi-v4\\abc_textfield_default_mtrl_alpha.9.png",

@@ -1,7 +1,5 @@
 package net.ericsson.emovs.analytics;
 
-import android.support.v4.util.Pair;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 

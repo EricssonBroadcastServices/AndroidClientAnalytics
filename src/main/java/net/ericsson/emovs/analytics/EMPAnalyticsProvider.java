@@ -13,6 +13,8 @@ import com.ebs.android.exposure.interfaces.IExposureCallback;
 import com.ebs.android.utilities.CheckRoot;
 import com.ebs.android.utilities.RunnableThread;
 
+import net.ericsson.emovs.utilities.ContextRegistry;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -79,8 +81,8 @@ public class EMPAnalyticsProvider {
         init();
     }
 
-    public static EMPAnalyticsProvider getInstance(Context context) {
-        EMPAnalyticsProvider.EMPAnalyticsProviderHolder.sInstance.setApplicationContext(context);
+    public static EMPAnalyticsProvider getInstance() {
+        EMPAnalyticsProvider.EMPAnalyticsProviderHolder.sInstance.setApplicationContext(ContextRegistry.get());
         return EMPAnalyticsProvider.EMPAnalyticsProviderHolder.sInstance;
     }
 

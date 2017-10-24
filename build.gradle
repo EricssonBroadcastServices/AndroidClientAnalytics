@@ -39,8 +39,12 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    //compile project(':libraries:exposure')
-    compile 'com.github.EricssonBroadcastServices:AndroidClientExposure:master-SNAPSHOT'
+    if (project.hasProperty('hasParentProject')) {
+        compile project(':libraries:exposure')
+    }
+    else {
+        compile 'com.github.EricssonBroadcastServices:AndroidClientExposure:master-SNAPSHOT'
+    }
     testCompile 'junit:junit:4.12'
 }
 

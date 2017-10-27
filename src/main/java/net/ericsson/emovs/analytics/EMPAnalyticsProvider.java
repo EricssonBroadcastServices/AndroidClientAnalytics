@@ -44,23 +44,29 @@ public class EMPAnalyticsProvider {
     final String ATTRIBUTES = "Attributes";
 
 
-    final String PLAYBACK_CREATED = "Playback.Created";
-    final String PLAYBACK_READY = "Playback.PlayerReady";
-    final String PLAYBACK_STARTED = "Playback.Started";
-    final String PLAYBACK_PAUSED = "Playback.Paused";
-    final String PLAYBACK_RESUMED = "Playback.Resumed";
-    final String PLAYBACK_SCRUBBED_TO = "Playback.ScrubbedTo";
-    final String PLAYBACK_START_CASTING = "Playback.StartCasting";
-    final String PLAYBACK_STOP_CASTING = "Playback.StopCasting";
-    final String PLAYBACK_HANDSHAKE_STARTED = "Playback.HandshakeStarted";
-    final String PLAYBACK_BITRATE_CHANGED = "Playback.BitrateChanged";
-    final String PLAYBACK_COMPLETED = "Playback.Completed";
-    final String PLAYBACK_ERROR = "Playback.Error";
-    final String PLAYBACK_ABORTED = "Playback.Aborted";
-    final String PLAYBACK_BUFFERING_STARTED = "Playback.BufferingStarted";
-    final String PLAYBACK_BUFFERING_ENDED = "Playback.BufferingEnded";
-    final String PLAYBACK_HEARTBEAT = "Playback.Heartbeat";
-    final String PLAYBACK_DEVICE_INFO = "Playback.DeviceInfo";
+    static final String PLAYBACK_CREATED = "Playback.Created";
+    static String PLAYBACK_READY = "Playback.PlayerReady";
+    static String PLAYBACK_STARTED = "Playback.Started";
+    static String PLAYBACK_PAUSED = "Playback.Paused";
+    static String PLAYBACK_RESUMED = "Playback.Resumed";
+    static String PLAYBACK_SCRUBBED_TO = "Playback.ScrubbedTo";
+    static String PLAYBACK_START_CASTING = "Playback.StartCasting";
+    static String PLAYBACK_STOP_CASTING = "Playback.StopCasting";
+    static String PLAYBACK_HANDSHAKE_STARTED = "Playback.HandshakeStarted";
+    static String PLAYBACK_BITRATE_CHANGED = "Playback.BitrateChanged";
+    static String PLAYBACK_COMPLETED = "Playback.Completed";
+    static String PLAYBACK_ERROR = "Playback.Error";
+    static String PLAYBACK_ABORTED = "Playback.Aborted";
+    static String PLAYBACK_BUFFERING_STARTED = "Playback.BufferingStarted";
+    static String PLAYBACK_BUFFERING_ENDED = "Playback.BufferingEnded";
+    static String PLAYBACK_HEARTBEAT = "Playback.Heartbeat";
+    static String PLAYBACK_DEVICE_INFO = "Playback.DeviceInfo";
+    static final String DOWNLOAD_STARTED = "Playback.DownloadStarted";
+    static final String DOWNLOAD_STOPPED = "Playback.DownloadStopped";
+    static final String DOWNLOAD_PAUSED = "Playback.DownloadPaused";
+    static final String DOWNLOAD_RESUMED = "Playback.DownloadResumed";
+    static final String DOWNLOAD_CANCELLED = "Playback.DownloadCancelled";
+    static final String DOWNLOAD_COMPLETED = "Playback.DownloadCompleted";
 
     private Context context;
     private HashMap<String, SessionDetails> eventPool;
@@ -226,6 +232,40 @@ public class EMPAnalyticsProvider {
         EventBuilder builder = new EventBuilder(PLAYBACK_BUFFERING_ENDED, parameters);
         setCurrentTime(sessionId, currentTime);
         addEventToPool(sessionId, builder, true);
+    }
+
+    public void downloadStarted(String sessionId, HashMap<String, String> parameters) {
+        EventBuilder builder = new EventBuilder(DOWNLOAD_STARTED, parameters);
+        addEventToPool(sessionId, builder, false);
+        changeSessionState(sessionId, SessionDetails.SESSION_STATE_PLAYING);
+    }
+
+    public void downloadPaused(String sessionId, HashMap<String, String> parameters) {
+        EventBuilder builder = new EventBuilder(DOWNLOAD_PAUSED, parameters);
+        addEventToPool(sessionId, builder, false);
+    }
+
+    public void downloadResumed(String sessionId, HashMap<String, String> parameters) {
+        EventBuilder builder = new EventBuilder(DOWNLOAD_RESUMED, parameters);
+        addEventToPool(sessionId, builder, false);
+    }
+
+    public void downloadStopped(String sessionId, HashMap<String, String> parameters) {
+        EventBuilder builder = new EventBuilder(DOWNLOAD_STOPPED, parameters);
+        addEventToPool(sessionId, builder, false);
+        changeSessionState(sessionId, SessionDetails.SESSION_STATE_FINISHED);
+    }
+
+    public void downloadCompleted(String sessionId, HashMap<String, String> parameters) {
+        EventBuilder builder = new EventBuilder(DOWNLOAD_COMPLETED, parameters);
+        addEventToPool(sessionId, builder, false);
+        changeSessionState(sessionId, SessionDetails.SESSION_STATE_FINISHED);
+    }
+
+    public void downloadError(String sessionId, HashMap<String, String> parameters) {
+        EventBuilder builder = new EventBuilder(PLAYBACK_ERROR, parameters);
+        addEventToPool(sessionId, builder, false);
+        changeSessionState(sessionId, SessionDetails.SESSION_STATE_DIRTY);
     }
 
     public void setCurrentTime(String sessionId, long currentTime) {

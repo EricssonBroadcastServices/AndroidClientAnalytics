@@ -275,51 +275,57 @@ public class EMPAnalyticsProvider {
         eventPool.get(sessionId).setCurrentTime(currentTime);
     }
 
-    private synchronized void sendData() {
-        for (Map.Entry<String, SessionDetails> entry : this.eventPool.entrySet()) {
-            final String sessionId = entry.getKey();
-            final SessionDetails details = entry.getValue();
-            if (details == null) {
-                continue;
-            }
-            if (details.getCurrentState() == SessionDetails.SESSION_STATE_PLAYING && details.getEvents().length() == 0) {
-                addEventToPool(sessionId, new EventBuilder(PLAYBACK_HEARTBEAT), true);
-            }
-            if (details.getCurrentState() != SessionDetails.SESSION_STATE_IDLE && details.getCurrentState() != SessionDetails.SESSION_STATE_REMOVED) {
-                if (details.getEvents().length() == 0) {
-                    if (details.getCurrentState() != SessionDetails.SESSION_STATE_FINISHED) {
-                        removeSession(sessionId, false);
-                    }
+    public void refresh() {
+        cycle();
+    }
+
+    private void sendData() {
+        synchronized (eventPool) {
+            for (Map.Entry<String, SessionDetails> entry : this.eventPool.entrySet()) {
+                final String sessionId = entry.getKey();
+                final SessionDetails details = entry.getValue();
+                if (details == null) {
                     continue;
                 }
-
-                try {
-                    // TODO: retry mechanism
-
-                    if (Math.abs(this.serviceCurrentTime - this.serviceLastTime) > DEVICE_CLOCK_CHECK_THRESHOLD) {
-                        sinkInit(sessionId);
-                    }
-
-                    JSONObject payload = new JSONObject();
-
-                    payload.put(SESSION_ID, sessionId);
-                    payload.put(DISPATCH_TIME, System.currentTimeMillis());
-                    payload.put(PAYLOAD, details.getEvents());
-                    payload.put(CLOCK_OFFSET, details.getClockOffset());
-
-                    sinkSend(payload, new Runnable() {
-                        @Override
-                        public void run() {
-                            clearSessionEvents(sessionId);
-                            if (details.getCurrentState() == SessionDetails.SESSION_STATE_FINISHED) {
-                                removeSession(sessionId, false);
-                            }
+                if (details.getCurrentState() == SessionDetails.SESSION_STATE_PLAYING && details.getEvents().length() == 0) {
+                    addEventToPool(sessionId, new EventBuilder(PLAYBACK_HEARTBEAT), true);
+                }
+                if (details.getCurrentState() != SessionDetails.SESSION_STATE_IDLE && details.getCurrentState() != SessionDetails.SESSION_STATE_REMOVED) {
+                    if (details.getEvents().length() == 0) {
+                        if (details.getCurrentState() != SessionDetails.SESSION_STATE_FINISHED) {
+                            removeSession(sessionId, false);
                         }
-                    }, null);
-                }
-                catch (JSONException e) {
-                    e.printStackTrace();
-                    continue;
+                        continue;
+                    }
+
+                    try {
+                        // TODO: retry mechanism
+
+                        if (Math.abs(this.serviceCurrentTime - this.serviceLastTime) > DEVICE_CLOCK_CHECK_THRESHOLD) {
+                            sinkInit(sessionId);
+                        }
+
+                        JSONObject payload = new JSONObject();
+
+                        payload.put(SESSION_ID, sessionId);
+                        payload.put(DISPATCH_TIME, System.currentTimeMillis());
+                        payload.put(PAYLOAD, details.getEvents());
+                        payload.put(CLOCK_OFFSET, details.getClockOffset());
+
+                        sinkSend(payload, new Runnable() {
+                            @Override
+                            public void run() {
+                                clearSessionEvents(sessionId);
+                                if (details.getCurrentState() == SessionDetails.SESSION_STATE_FINISHED) {
+                                    removeSession(sessionId, false);
+                                }
+                            }
+                        }, null);
+                    }
+                    catch (JSONException e) {
+                        e.printStackTrace();
+                        continue;
+                    }
                 }
             }
         }
@@ -337,17 +343,17 @@ public class EMPAnalyticsProvider {
     }
 
     private void cycle() {
-        serviceCurrentTime += CYCLE_TIME;
+        serviceCurrentTime = System.currentTimeMillis();
         if (hasData()) {
             if (serviceLastTime + EVENT_PURGE_TIME_DEFAULT < serviceCurrentTime) {
                 sendData();
-                serviceLastTime = serviceCurrentTime;
+                serviceLastTime = System.currentTimeMillis();
             }
         }
         else {
             if (serviceLastTime + TIME_WITHOUT_BEAT_DEFAULT < serviceCurrentTime) {
                 sendData();
-                serviceLastTime = serviceCurrentTime;
+                serviceLastTime = System.currentTimeMillis();
             }
         }
     }
@@ -363,7 +369,9 @@ public class EMPAnalyticsProvider {
 
     private void removeSession(String sessionId, boolean removeFromMemory) {
         if (removeFromMemory) {
-            eventPool.remove(sessionId);
+            synchronized (eventPool) {
+                eventPool.remove(sessionId);
+            }
         }
         else if (eventPool.containsKey(sessionId)) {
             eventPool.get(sessionId).setCurrentState(SessionDetails.SESSION_STATE_REMOVED);
@@ -380,7 +388,9 @@ public class EMPAnalyticsProvider {
     private void addEventToPool(final String sessionId, EventBuilder eventBuilder, boolean includeOffset) {
         boolean addDeviceInfo = false;
         if (this.eventPool.containsKey(sessionId) == false) {
-            this.eventPool.put(sessionId, new SessionDetails());
+            synchronized (eventPool) {
+                this.eventPool.put(sessionId, new SessionDetails());
+            }
             this.sinkInit(sessionId);
             addDeviceInfo = true;
         }

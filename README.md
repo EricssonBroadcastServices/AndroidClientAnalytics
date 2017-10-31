@@ -1,4 +1,4 @@
-# AndroidClientAnalytics
+# AndroidClientAnalytics    [![Release](https://jitpack.io/v/EricssonBroadcastServices/AndroidClientAnalytics.svg)](https://jitpack.io/#EricssonBroadcastServices/AndroidClientAnalytics)
 Library for android 2.0 analytics
 
 ## Requirements

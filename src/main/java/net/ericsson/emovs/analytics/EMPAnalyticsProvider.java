@@ -1,7 +1,9 @@
 package net.ericsson.emovs.analytics;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.provider.Settings;
+import android.util.ArraySet;
 
 import com.ebs.android.exposure.auth.DeviceInfo;
 import com.ebs.android.exposure.auth.EMPAuthProvider;
@@ -15,11 +17,18 @@ import com.ebs.android.utilities.RunnableThread;
 
 import net.ericsson.emovs.utilities.ContextRegistry;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Set;
 
 /**
  * Created by Joao Coelho on 2017-10-02.
@@ -30,6 +39,8 @@ public class EMPAnalyticsProvider {
     final int EVENT_PURGE_TIME_DEFAULT = 3 * CYCLE_TIME;
     final int TIME_WITHOUT_BEAT_DEFAULT = 60 * CYCLE_TIME;
     final int DEVICE_CLOCK_CHECK_THRESHOLD = 5 * 60 * 1000;  // 5 minutes
+
+    String ANALYTICS_SHARED_PREFERENCE_FILE = null;
 
     final String EVENTSINK_INIT_URL = "/eventsink/init";
     final String EVENTSINK_SEND_URL = "/eventsink/send";
@@ -115,6 +126,12 @@ public class EMPAnalyticsProvider {
             }
         });
         this.cyclicChecker.start();
+        new RunnableThread(new Runnable() {
+            @Override
+            public void run() {
+                trySendOfflineRequests();
+            }
+        }).start();
     }
 
     public void clear() {
@@ -191,9 +208,16 @@ public class EMPAnalyticsProvider {
         addEventToPool(sessionId, builder, true);
     }
 
+    public void handshakeStarted(String sessionId, boolean offline, HashMap<String, String> parameters) {
+        EventBuilder builder = new EventBuilder(PLAYBACK_HANDSHAKE_STARTED, parameters);
+        addEventToPool(sessionId, builder, false);
+        setOffline(sessionId, offline);
+    }
+
     public void handshakeStarted(String sessionId, HashMap<String, String> parameters) {
         EventBuilder builder = new EventBuilder(PLAYBACK_HANDSHAKE_STARTED, parameters);
         addEventToPool(sessionId, builder, false);
+        setOffline(sessionId, false);
     }
 
     public void bitrateChanged(String sessionId, long currentTime, HashMap<String, String> parameters) {
@@ -312,7 +336,7 @@ public class EMPAnalyticsProvider {
                         payload.put(PAYLOAD, details.getEvents());
                         payload.put(CLOCK_OFFSET, details.getClockOffset());
 
-                        sinkSend(payload, new Runnable() {
+                        sinkSend(sessionId, payload, new Runnable() {
                             @Override
                             public void run() {
                                 clearSessionEvents(sessionId);
@@ -376,6 +400,20 @@ public class EMPAnalyticsProvider {
         else if (eventPool.containsKey(sessionId)) {
             eventPool.get(sessionId).setCurrentState(SessionDetails.SESSION_STATE_REMOVED);
         }
+    }
+
+    private void setOffline(String sessionId, boolean offline) {
+        if (eventPool.containsKey(sessionId) == false) {
+            return;
+        }
+        eventPool.get(sessionId).setOffline(offline);
+    }
+
+    private boolean isOffline(String sessionId) {
+        if (eventPool.containsKey(sessionId) == false) {
+            return false;
+        }
+        return eventPool.get(sessionId).getOffline();
     }
 
     private void changeSessionState(String sessionId, String state) {
@@ -453,7 +491,7 @@ public class EMPAnalyticsProvider {
             return;
         }
 
-        JSONObject initPayload = new JSONObject();
+        final JSONObject initPayload = new JSONObject();
         try {
             initPayload.put(CUSTOMER, exposureClient.getCustomer());
             initPayload.put(BUSINESS_UNIT, exposureClient.getBusinessUnit());
@@ -474,11 +512,14 @@ public class EMPAnalyticsProvider {
                         fetchIncludeDeviceMetrics(response);
                     }
                 }
+                else if (isOffline(sessionId)) {
+                    saveOfflineRequest(initPayload);
+                }
             }
         });
     }
 
-    private void sinkSend(JSONObject payload, final Runnable onSuccess, Runnable onError) {
+    private void sinkSend(final String sessionId, final JSONObject payload, final Runnable onSuccess, Runnable onError) {
         ExposureClient exposureClient = ExposureClient.getInstance();
         if (exposureClient.getSessionToken() == null) {
             // TODO: handle case where no session token
@@ -502,6 +543,9 @@ public class EMPAnalyticsProvider {
                         onSuccess.run();
                     }
                 }
+                else if (isOffline(sessionId)) {
+                    saveOfflineRequest(payload);
+                }
                 else {
                     // TODO: implement on error
                 }
@@ -510,5 +554,77 @@ public class EMPAnalyticsProvider {
     }
 
 
+    private void saveOfflineRequest(JSONObject payload) {
+        try {
+            SharedPreferences sharedPref = getPreferences();
+            SharedPreferences.Editor editor = sharedPref.edit();
 
+            String payloadsString = sharedPref.getString("pending", "[]");
+            JSONArray payloads = new JSONArray(payloadsString);
+            payloads.put(payload);
+
+            editor.putString("pending", payloads.toString());
+            editor.commit();
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void trySendOfflineRequests() {
+        SharedPreferences sharedPref = getPreferences();
+        SharedPreferences.Editor editor = sharedPref.edit();
+
+        String payloadsString = sharedPref.getString("pending", "[]");
+        try {
+            JSONArray payloads = new JSONArray(payloadsString);
+            LinkedList<Integer> elementsToRemove = new LinkedList<>();
+            for (int i = 0; i < payloads.length(); ++i) {
+                final int iFinal = i;
+                final LinkedList<Integer> elementsToRemoveFinal = elementsToRemove;
+                JSONObject payload = payloads.getJSONObject(i);
+                if (payload.has(PAYLOAD)) {
+                    // send request
+                    ExposureClient.getInstance().postSync(EVENTSINK_SEND_URL, payload, new IExposureCallback() {
+                        @Override
+                        public void onCallCompleted(JSONObject response, ExposureError error) {
+                            if (error == null) {
+                                elementsToRemoveFinal.addFirst(iFinal);
+                            }
+                        }
+                    });
+                }
+                else if (payload.has(SESSION_ID)) {
+                    // init request
+                    ExposureClient.getInstance().postSync(EVENTSINK_INIT_URL, payload, new IExposureCallback() {
+                        @Override
+                        public void onCallCompleted(JSONObject response, ExposureError error) {
+                            if (error == null) {
+                                elementsToRemoveFinal.addFirst(iFinal);
+                            }
+                        }
+                    });
+                }
+
+                if (elementsToRemove.size() > 0 && elementsToRemove.peek().intValue() != iFinal) {
+                    break;
+                }
+            }
+
+            while(elementsToRemove.size() > 0) {
+                Integer i = elementsToRemove.poll();
+                payloads.remove(i);
+            }
+
+            editor.putString("pending", payloads.toString());
+            editor.commit();
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private SharedPreferences getPreferences() {
+        return ContextRegistry.get().getSharedPreferences(ANALYTICS_SHARED_PREFERENCE_FILE = "OFFLINE_ANALYTICS_" + ContextRegistry.get().getPackageName(), Context.MODE_PRIVATE);
+    }
 }

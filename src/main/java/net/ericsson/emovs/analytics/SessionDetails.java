@@ -15,6 +15,7 @@ public class SessionDetails {
     public final static String SESSION_STATE_REMOVED = "REMOVED";
 
     boolean isForbidden;
+    boolean offline;
     int currentRetries;
     long currentTime;
     long clockOffset;
@@ -57,6 +58,14 @@ public class SessionDetails {
 
     public void setCurrentState(String currentState) {
         this.currentState = currentState;
+    }
+
+    public boolean getOffline() {
+        return offline;
+    }
+
+    public void setOffline(boolean offline) {
+        this.offline = offline;
     }
 
     public String getSessionId() {

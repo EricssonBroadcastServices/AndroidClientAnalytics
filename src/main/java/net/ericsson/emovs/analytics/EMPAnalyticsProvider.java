@@ -2,18 +2,13 @@ package net.ericsson.emovs.analytics;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.provider.Settings;
-import android.util.ArraySet;
 
-import com.ebs.android.exposure.auth.DeviceInfo;
-import com.ebs.android.exposure.auth.EMPAuthProvider;
-import com.ebs.android.exposure.auth.EMPAuthProviderWithStorage;
-import com.ebs.android.exposure.clients.exposure.ExposureClient;
-import com.ebs.android.exposure.clients.exposure.ExposureError;
-import com.ebs.android.exposure.interfaces.IEntitlementCallback;
-import com.ebs.android.exposure.interfaces.IExposureCallback;
-import com.ebs.android.utilities.CheckRoot;
-import com.ebs.android.utilities.RunnableThread;
+import net.ericsson.emovs.exposure.auth.DeviceInfo;
+import net.ericsson.emovs.exposure.clients.exposure.ExposureClient;
+import net.ericsson.emovs.exposure.clients.exposure.ExposureError;
+import net.ericsson.emovs.exposure.interfaces.IExposureCallback;
+import net.ericsson.emovs.utilities.CheckRoot;
+import net.ericsson.emovs.utilities.RunnableThread;
 
 import net.ericsson.emovs.utilities.ContextRegistry;
 
@@ -21,14 +16,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Set;
 
 /**
  * Created by Joao Coelho on 2017-10-02.

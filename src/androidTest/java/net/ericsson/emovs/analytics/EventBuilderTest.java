@@ -2,6 +2,8 @@ package net.ericsson.emovs.analytics;
 
 import android.support.test.runner.AndroidJUnit4;
 
+import junit.framework.Assert;
+
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +32,13 @@ public class EventBuilderTest {
     }
 
     @Test
-    public void dummyTest() throws Exception {
+    public void buildTest() throws Exception {
+        EventBuilder builder = new EventBuilder("Playback.Created");
+        builder.withProp("myProp", "12345");
+        JSONObject event = builder.get();
+        Assert.assertTrue("Playback.Created".equals(event.getString("EventType")));
+        Assert.assertTrue(event.has("Timestamp"));
+        Assert.assertTrue("12345".equals(event.getString("myProp")));
     }
 
 

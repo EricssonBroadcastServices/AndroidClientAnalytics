@@ -473,7 +473,7 @@ public class EMPAnalyticsProvider {
         includeDeviceMetrics(includeDeviceMetrics);
     }
 
-    private void sinkInit(final String sessionId) {
+    protected void sinkInit(final String sessionId) {
         ExposureClient exposureClient = ExposureClient.getInstance();
         if (exposureClient.getSessionToken() == null) {
             //listener.onError(ExposureError.NO_SESSION_TOKEN);
@@ -509,7 +509,7 @@ public class EMPAnalyticsProvider {
         });
     }
 
-    private void sinkSend(final String sessionId, final JSONObject payload, final Runnable onSuccess, Runnable onError) {
+    protected void sinkSend(final String sessionId, final JSONObject payload, final Runnable onSuccess, Runnable onError) {
         ExposureClient exposureClient = ExposureClient.getInstance();
         if (exposureClient.getSessionToken() == null) {
             // TODO: handle case where no session token

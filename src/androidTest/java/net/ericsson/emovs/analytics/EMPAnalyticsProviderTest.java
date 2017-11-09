@@ -1,12 +1,20 @@
 package net.ericsson.emovs.analytics;
 
+import android.content.Context;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
+import net.ericsson.emovs.utilities.ContextRegistry;
+
 import org.json.JSONObject;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+
+import java.lang.reflect.Method;
+import java.util.HashMap;
 
 import static org.junit.Assert.*;
 
@@ -30,8 +38,52 @@ public class EMPAnalyticsProviderTest {
     }
 
     @Test
-    public void dummyTest() throws Exception {
+    public void analyticsInitTest() throws Exception {
+        Context appContext = InstrumentationRegistry.getTargetContext();
+        ContextRegistry.bind(appContext);
+
+        Assert.assertTrue(EMPAnalyticsProviderTester.getInstance() != null);
     }
 
+    @Test
+    public void analyticsSinkSendTest() throws Exception {
+        Context appContext = InstrumentationRegistry.getTargetContext();
+        ContextRegistry.bind(appContext);
+
+        EMPAnalyticsProviderTester provider = new EMPAnalyticsProviderTester();
+        provider.setApplicationContext(ContextRegistry.get());
+
+        HashMap<String, String> parameters = new HashMap<>();
+
+        parameters.put(EventParameters.Created.PLAY_MODE, "VOD");
+        parameters.put(EventParameters.Created.VERSION, "2.0.0");
+        parameters.put(EventParameters.Created.PLAYER, "EMP.Android");
+
+        provider.created("s12345", parameters);
+        provider.downloadStarted("s12345", null);
+
+        Thread.sleep(1000);
+
+        Assert.assertTrue(provider.hasSinkInit);
+        Assert.assertTrue("s12345".equals(provider.sessionId));
+        Assert.assertTrue("Playback.Created".equals(provider.payload.getJSONArray("Payload").getJSONObject(0).getString("EventType")));
+        Assert.assertTrue("Playback.DeviceInfo".equals(provider.payload.getJSONArray("Payload").getJSONObject(1).getString("EventType")));
+        Assert.assertTrue("Playback.DownloadStarted".equals(provider.payload.getJSONArray("Payload").getJSONObject(2).getString("EventType")));
+    }
+
+    private class EMPAnalyticsProviderTester extends EMPAnalyticsProvider {
+        public boolean hasSinkInit = false;
+        public String sessionId = "";
+        public JSONObject payload;
+
+        protected void sinkInit(final String sessionId) {
+            hasSinkInit = true;
+            this.sessionId = sessionId;
+        }
+
+        protected void sinkSend(final String sessionId, final JSONObject payload, final Runnable onSuccess, Runnable onError) {
+            this.payload = payload;
+        }
+    }
 
 }

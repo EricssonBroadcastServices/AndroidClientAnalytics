@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
-import net.ericsson.emovs.utilities.ContextRegistry;
+import net.ericsson.emovs.utilities.EMPRegistry;
 
 import org.json.JSONObject;
 import org.junit.Assert;
@@ -40,7 +40,7 @@ public class EMPAnalyticsProviderTest {
     @Test
     public void analyticsInitTest() throws Exception {
         Context appContext = InstrumentationRegistry.getTargetContext();
-        ContextRegistry.bind(appContext);
+        EMPRegistry.bindApplicationContext(appContext);
 
         Assert.assertTrue(EMPAnalyticsProviderTester.getInstance() != null);
     }
@@ -48,10 +48,10 @@ public class EMPAnalyticsProviderTest {
     @Test
     public void analyticsSinkSendTest() throws Exception {
         Context appContext = InstrumentationRegistry.getTargetContext();
-        ContextRegistry.bind(appContext);
+        EMPRegistry.bindApplicationContext(appContext);
 
         EMPAnalyticsProviderTester provider = new EMPAnalyticsProviderTester();
-        provider.setApplicationContext(ContextRegistry.get());
+        provider.setApplicationContext(EMPRegistry.applicationContext());
 
         HashMap<String, String> parameters = new HashMap<>();
 

@@ -10,7 +10,7 @@ import net.ericsson.emovs.exposure.interfaces.IExposureCallback;
 import net.ericsson.emovs.utilities.CheckRoot;
 import net.ericsson.emovs.utilities.RunnableThread;
 
-import net.ericsson.emovs.utilities.ContextRegistry;
+import net.ericsson.emovs.utilities.EMPRegistry;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -89,7 +89,7 @@ public class EMPAnalyticsProvider {
     }
 
     public static EMPAnalyticsProvider getInstance() {
-        EMPAnalyticsProvider.EMPAnalyticsProviderHolder.sInstance.setApplicationContext(ContextRegistry.get());
+        EMPAnalyticsProvider.EMPAnalyticsProviderHolder.sInstance.setApplicationContext(EMPRegistry.applicationContext());
         return EMPAnalyticsProvider.EMPAnalyticsProviderHolder.sInstance;
     }
 
@@ -615,6 +615,6 @@ public class EMPAnalyticsProvider {
     }
 
     private SharedPreferences getPreferences() {
-        return ContextRegistry.get().getSharedPreferences(ANALYTICS_SHARED_PREFERENCE_FILE = "OFFLINE_ANALYTICS_" + ContextRegistry.get().getPackageName(), Context.MODE_PRIVATE);
+        return EMPRegistry.applicationContext().getSharedPreferences(ANALYTICS_SHARED_PREFERENCE_FILE = "OFFLINE_ANALYTICS_" + EMPRegistry.applicationContext().getPackageName(), Context.MODE_PRIVATE);
     }
 }

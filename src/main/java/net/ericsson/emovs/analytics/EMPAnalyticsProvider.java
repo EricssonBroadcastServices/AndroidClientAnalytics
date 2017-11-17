@@ -225,7 +225,7 @@ public class EMPAnalyticsProvider {
     public void error(String sessionId, long currentTime, HashMap<String, String> parameters) {
         EventBuilder builder = new EventBuilder(PLAYBACK_ERROR, parameters);
         setCurrentTime(sessionId, currentTime);
-        addEventToPool(sessionId, builder, true);
+        addEventToPool(sessionId, builder, currentTime > 0);
         changeSessionState(sessionId, SessionDetails.SESSION_STATE_DIRTY);
     }
 

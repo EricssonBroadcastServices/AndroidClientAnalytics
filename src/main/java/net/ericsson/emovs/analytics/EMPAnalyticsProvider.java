@@ -5,9 +5,9 @@ import android.content.SharedPreferences;
 
 import net.ericsson.emovs.exposure.auth.DeviceInfo;
 import net.ericsson.emovs.exposure.clients.exposure.ExposureClient;
-import net.ericsson.emovs.exposure.clients.exposure.ExposureError;
 import net.ericsson.emovs.exposure.interfaces.IExposureCallback;
 import net.ericsson.emovs.utilities.CheckRoot;
+import net.ericsson.emovs.utilities.Error;
 import net.ericsson.emovs.utilities.RunnableThread;
 
 import net.ericsson.emovs.utilities.EMPRegistry;
@@ -476,7 +476,7 @@ public class EMPAnalyticsProvider {
     protected void sinkInit(final String sessionId) {
         ExposureClient exposureClient = ExposureClient.getInstance();
         if (exposureClient.getSessionToken() == null) {
-            //listener.onError(ExposureError.NO_SESSION_TOKEN);
+            //listener.onError(Error.NO_SESSION_TOKEN);
             // TODO: handle case where no session token
             return;
         }
@@ -495,7 +495,7 @@ public class EMPAnalyticsProvider {
         final long initInitialTime = System.currentTimeMillis();
         ExposureClient.getInstance().postSync(EVENTSINK_INIT_URL, initPayload, new IExposureCallback() {
             @Override
-            public void onCallCompleted(JSONObject response, ExposureError error) {
+            public void onCallCompleted(JSONObject response, Error error) {
                 if (error == null) {
                     if(response != null) {
                         calculateClockOffset(sessionId, response, initInitialTime);
@@ -527,7 +527,7 @@ public class EMPAnalyticsProvider {
         // TODO: handle error
         ExposureClient.getInstance().postSync(EVENTSINK_SEND_URL, payload, new IExposureCallback() {
             @Override
-            public void onCallCompleted(JSONObject response, ExposureError error) {
+            public void onCallCompleted(JSONObject response, Error error) {
                 if(error == null) {
                     if(onSuccess != null) {
                         onSuccess.run();
@@ -577,7 +577,7 @@ public class EMPAnalyticsProvider {
                     // send request
                     ExposureClient.getInstance().postSync(EVENTSINK_SEND_URL, payload, new IExposureCallback() {
                         @Override
-                        public void onCallCompleted(JSONObject response, ExposureError error) {
+                        public void onCallCompleted(JSONObject response, Error error) {
                             if (error == null) {
                                 elementsToRemoveFinal.addFirst(iFinal);
                             }
@@ -588,7 +588,7 @@ public class EMPAnalyticsProvider {
                     // init request
                     ExposureClient.getInstance().postSync(EVENTSINK_INIT_URL, payload, new IExposureCallback() {
                         @Override
-                        public void onCallCompleted(JSONObject response, ExposureError error) {
+                        public void onCallCompleted(JSONObject response, Error error) {
                             if (error == null) {
                                 elementsToRemoveFinal.addFirst(iFinal);
                             }

@@ -6,11 +6,11 @@ import android.content.SharedPreferences;
 import net.ericsson.emovs.exposure.auth.DeviceInfo;
 import net.ericsson.emovs.exposure.clients.exposure.ExposureClient;
 import net.ericsson.emovs.exposure.interfaces.IExposureCallback;
-import net.ericsson.emovs.utilities.CheckRoot;
-import net.ericsson.emovs.utilities.Error;
-import net.ericsson.emovs.utilities.RunnableThread;
+import net.ericsson.emovs.utilities.system.CheckRoot;
+import net.ericsson.emovs.utilities.errors.Error;
+import net.ericsson.emovs.utilities.system.RunnableThread;
 
-import net.ericsson.emovs.utilities.EMPRegistry;
+import net.ericsson.emovs.utilities.emp.EMPRegistry;
 
 import org.json.JSONArray;
 import org.json.JSONException;

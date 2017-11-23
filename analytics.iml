@@ -117,6 +117,7 @@
     <orderEntry type="module" module-name="utilities" exported="" />
     <orderEntry type="module" module-name="exposure" exported="" />
     <orderEntry type="library" exported="" name="android-android-26" level="project" />
+    <orderEntry type="library" exported="" name="commons-io-2.5" level="project" />
     <orderEntry type="library" exported="" name="joda-time-2.9.4" level="project" />
   </component>
 </module>

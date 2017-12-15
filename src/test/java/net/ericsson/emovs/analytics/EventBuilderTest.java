@@ -1,6 +1,5 @@
 package net.ericsson.emovs.analytics;
 
-import android.support.test.runner.AndroidJUnit4;
 
 import junit.framework.Assert;
 
@@ -8,6 +7,7 @@ import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
 
 
 import static org.junit.Assert.*;
@@ -24,7 +24,7 @@ import static org.junit.Assert.*;
  * THE PRODUCT.
  */
 
-//@RunWith(AndroidJUnit4.class)
+@RunWith(RobolectricTestRunner.class)
 public class EventBuilderTest {
 
     @Before

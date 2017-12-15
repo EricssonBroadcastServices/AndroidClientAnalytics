@@ -1,7 +1,7 @@
 package net.ericsson.emovs.analytics;
 
+import android.app.Activity;
 import android.content.Context;
-import android.support.test.InstrumentationRegistry;
 
 import net.ericsson.emovs.utilities.emp.EMPRegistry;
 
@@ -9,6 +9,9 @@ import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
+import org.robolectric.RobolectricTestRunner;
 
 
 import java.util.HashMap;
@@ -25,7 +28,7 @@ import java.util.HashMap;
  * THE PRODUCT.
  */
 
-//@RunWith(AndroidJUnit4.class)
+@RunWith(RobolectricTestRunner.class)
 public class EMPAnalyticsProviderTest {
 
     @Before
@@ -34,7 +37,9 @@ public class EMPAnalyticsProviderTest {
 
     @Test
     public void analyticsInitTest() throws Exception {
-        Context appContext = InstrumentationRegistry.getTargetContext();
+        Activity activity = Robolectric.setupActivity(Activity.class);
+        Context appContext = activity.getApplicationContext();
+
         EMPRegistry.bindApplicationContext(appContext);
 
         Assert.assertTrue(EMPAnalyticsProviderTester.getInstance() != null);
@@ -42,7 +47,9 @@ public class EMPAnalyticsProviderTest {
 
     @Test
     public void analyticsSinkSendTest() throws Exception {
-        Context appContext = InstrumentationRegistry.getTargetContext();
+        Activity activity = Robolectric.setupActivity(Activity.class);
+        Context appContext = activity.getApplicationContext();
+
         EMPRegistry.bindApplicationContext(appContext);
 
         EMPAnalyticsProviderTester provider = new EMPAnalyticsProviderTester();

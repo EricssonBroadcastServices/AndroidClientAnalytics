@@ -139,6 +139,9 @@ public class EMPAnalyticsConnector extends AnalyticsPlaybackConnector {
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
+            if (cleanMediaLocator.contains(".isml")) {
+                parameters.put(EventParameters.Started.REFERENCE_TIME, "0");
+            }
             parameters.put(EventParameters.Started.MEDIA_LOCATOR, cleanMediaLocator);
             parameters.put(EventParameters.Started.VIDEO_LENGTH, Long.toString(duration));
             parameters.put(EventParameters.Started.BITRATE, Integer.toString(player().getCurrentBitrate()));

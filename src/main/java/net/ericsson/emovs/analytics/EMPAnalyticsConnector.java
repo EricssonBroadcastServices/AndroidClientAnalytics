@@ -126,7 +126,7 @@ public class EMPAnalyticsConnector extends AnalyticsPlaybackConnector {
             return;
         }
 
-        long currenTime = player().getCurrentTime();
+        long currenTime = player().getPlayheadTime();
         long duration = player().getDuration();
         Entitlement entitlement = player().getEntitlement();
 
@@ -169,7 +169,7 @@ public class EMPAnalyticsConnector extends AnalyticsPlaybackConnector {
             return;
         }
 
-        long currenTime = player().getCurrentTime();
+        long currenTime = player().getPlayheadTime();
         EMPAnalyticsProvider.getInstance().paused(sessionId, currenTime, null);
     }
 
@@ -183,7 +183,7 @@ public class EMPAnalyticsConnector extends AnalyticsPlaybackConnector {
             return;
         }
 
-        long currenTime = player().getCurrentTime();
+        long currenTime = player().getPlayheadTime();
         EMPAnalyticsProvider.getInstance().seeked(sessionId, currenTime, null);
     }
 
@@ -197,7 +197,7 @@ public class EMPAnalyticsConnector extends AnalyticsPlaybackConnector {
             return;
         }
 
-        long currenTime = player().getCurrentTime();
+        long currenTime = player().getPlayheadTime();
         EMPAnalyticsProvider.getInstance().resumed(sessionId, currenTime, null);
     }
 
@@ -211,7 +211,7 @@ public class EMPAnalyticsConnector extends AnalyticsPlaybackConnector {
             return;
         }
 
-        long currenTime = player().getCurrentTime();
+        long currenTime = player().getPlayheadTime();
 
         HashMap<String, String> parameters = new HashMap<>();
         parameters.put(EventParameters.BitrateChanged.BITRATE, Integer.toString(newBitrate));
@@ -230,7 +230,7 @@ public class EMPAnalyticsConnector extends AnalyticsPlaybackConnector {
             return;
         }
 
-        long currenTime = player().getCurrentTime();
+        long currenTime = player().getPlayheadTime();
         EMPAnalyticsProvider.getInstance().waitingStarted(sessionId, currenTime, null);
     }
 
@@ -244,7 +244,7 @@ public class EMPAnalyticsConnector extends AnalyticsPlaybackConnector {
             return;
         }
 
-        long currenTime = player().getCurrentTime();
+        long currenTime = player().getPlayheadTime();
         EMPAnalyticsProvider.getInstance().waitingEnded(sessionId, currenTime, null);
     }
 
@@ -272,7 +272,7 @@ public class EMPAnalyticsConnector extends AnalyticsPlaybackConnector {
             return;
         }
 
-        long currenTime = player().getCurrentTime();
+        long currenTime = player().getPlayheadTime();
         EMPAnalyticsProvider.getInstance().aborted(sessionId, currenTime, null);
         clearTimeUpdater();
     }
@@ -287,7 +287,7 @@ public class EMPAnalyticsConnector extends AnalyticsPlaybackConnector {
             return;
         }
 
-        long currenTime = player().getCurrentTime();
+        long currenTime = player().getPlayheadTime();
 
         HashMap<String, String> parameters = new HashMap<>();
         parameters.put(EventParameters.Error.CODE, Integer.toString(errorCode));

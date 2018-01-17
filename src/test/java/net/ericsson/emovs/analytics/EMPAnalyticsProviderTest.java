@@ -89,7 +89,7 @@ public class EMPAnalyticsProviderTest {
         Assert.assertTrue(provider.hasSinkInit);
         Assert.assertTrue("s12345".equals(provider.sessionId));
         Assert.assertTrue("Playback.Created".equals(provider.payload.getJSONArray("Payload").getJSONObject(0).getString("EventType")));
-        Assert.assertTrue("Playback.DeviceInfo".equals(provider.payload.getJSONArray("Payload").getJSONObject(1).getString("EventType")));
+        Assert.assertTrue("Device.Info".equals(provider.payload.getJSONArray("Payload").getJSONObject(1).getString("EventType")));
         Assert.assertTrue("Playback.DownloadStarted".equals(provider.payload.getJSONArray("Payload").getJSONObject(2).getString("EventType")));
         Assert.assertTrue("Playback.Error".equals(provider.payload.getJSONArray("Payload").getJSONObject(3).getString("EventType")));
         Assert.assertTrue("Playback.Started".equals(provider.payload.getJSONArray("Payload").getJSONObject(4).getString("EventType")));

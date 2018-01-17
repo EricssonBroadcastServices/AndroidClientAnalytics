@@ -61,7 +61,7 @@ public class EMPAnalyticsProvider {
     static String PLAYBACK_BUFFERING_STARTED = "Playback.BufferingStarted";
     static String PLAYBACK_BUFFERING_ENDED = "Playback.BufferingEnded";
     static String PLAYBACK_HEARTBEAT = "Playback.Heartbeat";
-    static String PLAYBACK_DEVICE_INFO = "Playback.DeviceInfo";
+    static String PLAYBACK_DEVICE_INFO = "Device.Info";
     static final String DOWNLOAD_STARTED = "Playback.DownloadStarted";
     static final String DOWNLOAD_STOPPED = "Playback.DownloadStopped";
     static final String DOWNLOAD_PAUSED = "Playback.DownloadPaused";

@@ -303,6 +303,20 @@ public class EMPAnalyticsConnector extends AnalyticsPlaybackConnector {
         clearTimeUpdater();
     }
 
+    @Override
+    public void onProgramChange(EmpProgram newProgram) {
+        if (player() == null) {
+            return;
+        }
+        String sessionId = player().getSessionId();
+        if (sessionId == null) {
+            return;
+        }
+
+        long currenTime = player().getPlayheadTime();
+        EMPAnalyticsProvider.getInstance().programChanged(sessionId, currenTime, newProgram.programId, new HashMap<String, String>());
+    }
+
     private void clearTimeUpdater() {
         if (timeUpdater != null && timeUpdater.isInterrupted() == false && timeUpdater.isAlive()) {
             timeUpdater.interrupt();

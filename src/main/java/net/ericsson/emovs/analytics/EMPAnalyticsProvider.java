@@ -43,6 +43,7 @@ public class EMPAnalyticsProvider {
     final String CLOCK_OFFSET = "ClockOffset";
     final String DISPATCH_TIME = "DispatchTime";
     final String ATTRIBUTES = "Attributes";
+    final String PROGRAM_ID = "ProgramId";
 
 
     static final String PLAYBACK_CREATED = "Playback.Created";
@@ -61,6 +62,7 @@ public class EMPAnalyticsProvider {
     static String PLAYBACK_BUFFERING_STARTED = "Playback.BufferingStarted";
     static String PLAYBACK_BUFFERING_ENDED = "Playback.BufferingEnded";
     static String PLAYBACK_HEARTBEAT = "Playback.Heartbeat";
+    static String PLAYBACK_PROGRAM_CHANGED = "Playback.ProgramChanged";
     static String PLAYBACK_DEVICE_INFO = "Device.Info";
     static final String DOWNLOAD_STARTED = "Playback.DownloadStarted";
     static final String DOWNLOAD_STOPPED = "Playback.DownloadStopped";
@@ -212,6 +214,12 @@ public class EMPAnalyticsProvider {
 
     public void bitrateChanged(String sessionId, long currentTime, HashMap<String, String> parameters) {
         EventBuilder builder = new EventBuilder(PLAYBACK_BITRATE_CHANGED, parameters);
+        setCurrentTime(sessionId, currentTime);
+        addEventToPool(sessionId, builder, true);
+    }
+
+    public void programChanged(String sessionId, long currentTime, String programId, HashMap<String, String> parameters) {
+        EventBuilder builder = new EventBuilder(PLAYBACK_PROGRAM_CHANGED, parameters).withProp(PROGRAM_ID, programId);
         setCurrentTime(sessionId, currentTime);
         addEventToPool(sessionId, builder, true);
     }

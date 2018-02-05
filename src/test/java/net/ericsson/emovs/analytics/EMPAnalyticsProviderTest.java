@@ -83,6 +83,7 @@ public class EMPAnalyticsProviderTest {
         provider.downloadResumed("s12345", parameters);
         provider.ready("s12345", parameters);
         provider.handshakeStarted("s12345", false, parameters);
+        provider.programChanged("s12345", 0L, "123456", parameters);
 
         Thread.sleep(1000);
 
@@ -111,6 +112,7 @@ public class EMPAnalyticsProviderTest {
         Assert.assertTrue("Playback.DownloadResumed".equals(provider.payload.getJSONArray("Payload").getJSONObject(20).getString("EventType")));
         Assert.assertTrue("Playback.PlayerReady".equals(provider.payload.getJSONArray("Payload").getJSONObject(21).getString("EventType")));
         Assert.assertTrue("Playback.HandshakeStarted".equals(provider.payload.getJSONArray("Payload").getJSONObject(22).getString("EventType")));
+        Assert.assertTrue("Playback.ProgramChanged".equals(provider.payload.getJSONArray("Payload").getJSONObject(23).getString("EventType")));
     }
 
     private class EMPAnalyticsProviderTester extends EMPAnalyticsProvider {

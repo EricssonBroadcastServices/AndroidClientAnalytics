@@ -1,6 +1,7 @@
 package net.ericsson.emovs.analytics;
 
 
+import net.ericsson.emovs.utilities.emp.UniversalPackagerHelper;
 import net.ericsson.emovs.utilities.interfaces.IEntitledPlayer;
 import net.ericsson.emovs.utilities.interfaces.IPlayable;
 import net.ericsson.emovs.utilities.models.EmpAsset;
@@ -139,7 +140,7 @@ public class EMPAnalyticsConnector extends AnalyticsPlaybackConnector {
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
-            if (cleanMediaLocator.contains(".isml")) {
+            if (UniversalPackagerHelper.isUniversalPackager(cleanMediaLocator)) {
                 parameters.put(EventParameters.Started.REFERENCE_TIME, "0");
             }
             parameters.put(EventParameters.Started.MEDIA_LOCATOR, cleanMediaLocator);

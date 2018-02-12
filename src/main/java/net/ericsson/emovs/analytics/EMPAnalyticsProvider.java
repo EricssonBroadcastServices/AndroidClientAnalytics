@@ -501,7 +501,7 @@ public class EMPAnalyticsProvider {
 
         // TODO: handle error
         final long initInitialTime = System.currentTimeMillis();
-        ExposureClient.getInstance().postSync(EVENTSINK_INIT_URL, initPayload, new IExposureCallback() {
+        ExposureClient.getInstance().postAsync(EVENTSINK_INIT_URL, initPayload, new IExposureCallback() {
             @Override
             public void onCallCompleted(JSONObject response, Error error) {
                 if (error == null) {

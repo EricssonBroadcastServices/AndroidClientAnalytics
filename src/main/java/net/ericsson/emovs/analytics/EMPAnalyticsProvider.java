@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import net.ericsson.emovs.exposure.auth.DeviceInfo;
 import net.ericsson.emovs.exposure.clients.exposure.ExposureClient;
 import net.ericsson.emovs.exposure.interfaces.IExposureCallback;
+import net.ericsson.emovs.exposure.utils.MonotonicTimeService;
 import net.ericsson.emovs.utilities.system.CheckRoot;
 import net.ericsson.emovs.utilities.errors.Error;
 import net.ericsson.emovs.utilities.system.RunnableThread;
@@ -330,7 +331,7 @@ public class EMPAnalyticsProvider {
                         JSONObject payload = new JSONObject();
 
                         payload.put(SESSION_ID, sessionId);
-                        payload.put(DISPATCH_TIME, System.currentTimeMillis());
+                        payload.put(DISPATCH_TIME, MonotonicTimeService.getInstance().currentTime());
                         payload.put(PAYLOAD, details.getEvents());
                         payload.put(CLOCK_OFFSET, details.getClockOffset());
 

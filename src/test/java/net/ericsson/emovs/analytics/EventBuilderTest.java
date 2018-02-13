@@ -3,6 +3,9 @@ package net.ericsson.emovs.analytics;
 
 import junit.framework.Assert;
 
+import net.ericsson.emovs.exposure.utils.MonotonicTimeService;
+import net.ericsson.emovs.utilities.test.TestUtils;
+
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,6 +36,17 @@ public class EventBuilderTest {
 
     @Test
     public void buildTest() throws Exception {
+        MonotonicTimeService fakeMonotonicTimeService = new MonotonicTimeService() {
+            @Override
+            public void start() {}
+
+            @Override
+            public Long currentTime() {
+                return 0L;
+            }
+        };
+        TestUtils.mockProvider(MonotonicTimeService.class, fakeMonotonicTimeService);
+
         EventBuilder builder = new EventBuilder("Playback.Created");
         builder.withProp("myProp", "12345");
         JSONObject event = builder.get();

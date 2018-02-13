@@ -3,7 +3,10 @@ package net.ericsson.emovs.analytics;
 import android.app.Activity;
 import android.content.Context;
 
+import net.ericsson.emovs.exposure.entitlements.EMPEntitlementProvider;
+import net.ericsson.emovs.exposure.utils.MonotonicTimeService;
 import net.ericsson.emovs.utilities.emp.EMPRegistry;
+import net.ericsson.emovs.utilities.test.TestUtils;
 
 import org.json.JSONObject;
 import org.junit.Assert;
@@ -47,6 +50,17 @@ public class EMPAnalyticsProviderTest {
 
     @Test
     public void analyticsSinkSendTest() throws Exception {
+        MonotonicTimeService fakeMonotonicTimeService = new MonotonicTimeService() {
+            @Override
+            public void start() {}
+
+            @Override
+            public Long currentTime() {
+                return 0L;
+            }
+        };
+        TestUtils.mockProvider(MonotonicTimeService.class, fakeMonotonicTimeService);
+
         Activity activity = Robolectric.setupActivity(Activity.class);
         Context appContext = activity.getApplicationContext();
 

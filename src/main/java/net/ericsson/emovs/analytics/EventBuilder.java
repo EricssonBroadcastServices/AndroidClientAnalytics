@@ -1,5 +1,7 @@
 package net.ericsson.emovs.analytics;
 
+import net.ericsson.emovs.exposure.utils.MonotonicTimeService;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -24,7 +26,7 @@ public class EventBuilder {
     public void init(String eventType, HashMap<String, String> parameters) {
         this.event = new JSONObject();
         withProp("EventType", eventType);
-        withProp("Timestamp", System.currentTimeMillis());
+        withProp("Timestamp", MonotonicTimeService.getInstance().currentTime());
         if (parameters != null) {
             for (Map.Entry<String, String> entry : parameters.entrySet()) {
                 withProp(entry.getKey(), entry.getValue());

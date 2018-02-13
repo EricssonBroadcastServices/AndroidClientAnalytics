@@ -465,7 +465,7 @@ public class EMPAnalyticsProvider {
         if (this.eventPool.containsKey(sessionId) == false) {
             return;
         }
-        long currentTime = System.currentTimeMillis();
+        long currentTime = MonotonicTimeService.getInstance().currentTime();
         try {
             initResponse.getLong("repliedTime");
             long clockOfsset = (currentTime - initResponse.getLong("repliedTime") + initInitialTime - initResponse.getLong("receivedTime")) / 2;
@@ -506,8 +506,8 @@ public class EMPAnalyticsProvider {
         }
 
         // TODO: handle error
-        final long initInitialTime = System.currentTimeMillis();
-        ExposureClient.getInstance().postAsync(EVENTSINK_INIT_URL, initPayload, new IExposureCallback() {
+        final long initInitialTime = MonotonicTimeService.getInstance().currentTime();
+        ExposureClient.getInstance().postSync(EVENTSINK_INIT_URL, initPayload, new IExposureCallback() {
             @Override
             public void onCallCompleted(JSONObject response, Error error) {
                 if (error == null) {

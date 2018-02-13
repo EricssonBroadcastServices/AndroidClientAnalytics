@@ -427,7 +427,12 @@ public class EMPAnalyticsProvider {
             synchronized (eventPool) {
                 this.eventPool.put(sessionId, new SessionDetails());
             }
-            this.sinkInit(sessionId);
+            new RunnableThread(new Runnable() {
+                @Override
+                public void run() {
+                    sinkInit(sessionId);
+                }
+            }).start();
             addDeviceInfo = true;
         }
 

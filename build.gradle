@@ -24,7 +24,7 @@ group='com.github.EricssonBroadcastServices'
 
 ext {
     releaseArtifact = 'empplayer-analytics'
-    releaseVersion = 'v2.0.77'
+    releaseVersion = 'v2.0.78'
     releaseDescription = 'The EMP Player library analytics module.'
     libraryTag = 'master-SNAPSHOT'
 }

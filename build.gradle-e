@@ -26,7 +26,7 @@ ext {
     releaseArtifact = 'empplayer-analytics'
     releaseVersion = 'v2.0.78'
     releaseDescription = 'The EMP Player library analytics module.'
-    libraryTag = 'r2.0.78'
+    libraryTag = 'master-SNAPSHOT'
 }
 
 

@@ -283,7 +283,15 @@ public class EMPAnalyticsConnector extends AnalyticsPlaybackConnector {
         if (player() == null) {
             return;
         }
-        String sessionId = player().getSessionId();
+        onError(player().getSessionId(), errorCode, errorMessage);
+    }
+
+    @Override
+    public void onError(String sessionId, int errorCode, String errorMessage) {
+        if (player() == null) {
+            return;
+        }
+
         if (sessionId == null) {
             return;
         }
@@ -343,7 +351,7 @@ public class EMPAnalyticsConnector extends AnalyticsPlaybackConnector {
     }
 
 
-    private IEntitledPlayer player() {
+    public IEntitledPlayer player() {
         if (player instanceof IEntitledPlayer) {
             return (IEntitledPlayer) player;
         }

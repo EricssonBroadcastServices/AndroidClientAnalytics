@@ -12,6 +12,7 @@ import net.ericsson.emovs.utilities.errors.Error;
 import net.ericsson.emovs.utilities.system.RunnableThread;
 
 import net.ericsson.emovs.utilities.emp.EMPRegistry;
+import net.ericsson.emovs.utilities.system.ServiceUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -307,6 +308,11 @@ public class EMPAnalyticsProvider {
             for (Map.Entry<String, SessionDetails> entry : this.eventPool.entrySet()) {
                 final String sessionId = entry.getKey();
                 final SessionDetails details = entry.getValue();
+
+                if (!isOffline(sessionId) && EMPRegistry.applicationContext() != null && !ServiceUtils.haveNetworkConnection(EMPRegistry.applicationContext())) {
+                    continue;
+                }
+
                 if (details == null) {
                     continue;
                 }

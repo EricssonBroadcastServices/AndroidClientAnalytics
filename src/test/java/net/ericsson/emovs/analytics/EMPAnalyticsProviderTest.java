@@ -99,6 +99,7 @@ public class EMPAnalyticsProviderTest {
         provider.handshakeStarted("s12345", false, parameters);
         provider.programChanged("s12345", 0L, "123456", parameters);
 
+        EMPRegistry.bindApplicationContext(null);
         Thread.sleep(1000);
 
         Assert.assertTrue(provider.hasSinkInit);

@@ -308,6 +308,50 @@ public class EMPAnalyticsConnector extends AnalyticsPlaybackConnector {
     }
 
     @Override
+    public void onErrorDetailed(int code, String message, String info, String details) {
+        if (player() == null) {
+            return;
+        }
+
+        onErrorDetailed(player().getSessionId(), code, message, info, details);
+    }
+
+    @Override
+    public void onErrorDetailed(String sessionId, int code, String message, String info, String details) {
+        if (player() == null) {
+            return;
+        }
+
+        if (sessionId == null) {
+            return;
+        }
+
+        long currenTime = player().getPlayheadTime();
+
+        HashMap<String, String> parameters = new HashMap<>();
+
+        // Error Code
+        parameters.put(EventParameters.Error.CODE, Integer.toString(code));
+
+        // Exception (class name)
+        if ((message != null) && !message.isEmpty()) {
+            parameters.put(EventParameters.Error.MESSAGE, message);
+        }
+
+        // Exception message
+        if ((info != null) && !info.isEmpty()) {
+            parameters.put(EventParameters.Error.INFO, info);
+        }
+
+        // Full stacktrace
+        if ((details != null) && !details.isEmpty()) {
+            parameters.put(EventParameters.Error.DETAILS, details);
+        }
+
+        EMPAnalyticsProvider.getInstance().error(sessionId, currenTime, parameters);
+    }
+
+    @Override
     public void onDispose() {
         clearTimeUpdater();
     }

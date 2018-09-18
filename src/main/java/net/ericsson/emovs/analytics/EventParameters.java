@@ -27,6 +27,8 @@ public class EventParameters {
     public static class Error {
         public final static String CODE = "Code";
         public final static String MESSAGE = "Message";
+        public final static String INFO = "Info";
+        public final static String DETAILS = "Details";
     }
     public static class HandshakeStarted {
         public final static String ASSET_ID = "AssetId";

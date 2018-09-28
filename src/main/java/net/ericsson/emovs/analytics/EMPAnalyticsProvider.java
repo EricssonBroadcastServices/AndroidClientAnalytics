@@ -464,7 +464,8 @@ public class EMPAnalyticsProvider {
                 .withProp("OS", deviceInfo.getOS())
                 .withProp("OSVersion", deviceInfo.getOSVersion())
                 .withProp("Manufacturer", deviceInfo.getManufacturer())
-                .withProp("IsRooted", CheckRoot.isDeviceRooted());
+                .withProp("IsRooted", deviceInfo.isDeviceRooted())
+                .withProp("WidevineSecurityLevel", deviceInfo.getWidevineDrmSecurityLevel());
     }
 
     private void calculateClockOffset(String sessionId, JSONObject initResponse, long initInitialTime) {

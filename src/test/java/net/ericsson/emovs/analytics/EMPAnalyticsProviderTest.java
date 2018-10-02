@@ -33,6 +33,7 @@ import java.util.HashMap;
 
 @RunWith(RobolectricTestRunner.class)
 public class EMPAnalyticsProviderTest {
+    private static final long MAX_WAIT_TIME_FOR_PAYLOAD = 1000L;
 
     @Before
     public void setUp() throws Exception {
@@ -104,6 +105,16 @@ public class EMPAnalyticsProviderTest {
 
         Assert.assertTrue(provider.hasSinkInit);
         Assert.assertTrue("s12345".equals(provider.sessionId));
+
+        long waitStartTime = System.currentTimeMillis();
+        while(System.currentTimeMillis() - waitStartTime < MAX_WAIT_TIME_FOR_PAYLOAD) {
+            if(provider.payload == null) { //payload is assgned from a different thread.
+                Thread.sleep(1L); //Wait
+            } else {
+                break;
+            }
+        }
+        Assert.assertNotNull("provider.payload is null (waited "+MAX_WAIT_TIME_FOR_PAYLOAD+" millis)",provider.payload);
         Assert.assertTrue("Playback.Created".equals(provider.payload.getJSONArray("Payload").getJSONObject(0).getString("EventType")));
         Assert.assertTrue("Device.Info".equals(provider.payload.getJSONArray("Payload").getJSONObject(1).getString("EventType")));
         Assert.assertTrue("Playback.DownloadStarted".equals(provider.payload.getJSONArray("Payload").getJSONObject(2).getString("EventType")));
@@ -133,7 +144,7 @@ public class EMPAnalyticsProviderTest {
     private class EMPAnalyticsProviderTester extends EMPAnalyticsProvider {
         public boolean hasSinkInit = false;
         public String sessionId = "";
-        public JSONObject payload;
+        public volatile JSONObject payload;
 
         protected void sinkInit(final String sessionId) {
             hasSinkInit = true;

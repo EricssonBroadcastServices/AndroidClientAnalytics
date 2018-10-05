@@ -3,10 +3,10 @@ package net.ericsson.emovs.analytics;
 import android.app.Activity;
 import android.content.Context;
 
-import net.ericsson.emovs.exposure.entitlements.EMPEntitlementProvider;
 import net.ericsson.emovs.exposure.utils.MonotonicTimeService;
 import net.ericsson.emovs.utilities.emp.EMPRegistry;
 import net.ericsson.emovs.utilities.test.TestUtils;
+import net.ericsson.emovs.utilities.test.Waiter;
 
 import org.json.JSONObject;
 import org.junit.Assert;
@@ -67,7 +67,7 @@ public class EMPAnalyticsProviderTest {
 
         EMPRegistry.bindApplicationContext(appContext);
 
-        EMPAnalyticsProviderTester provider = new EMPAnalyticsProviderTester();
+        final EMPAnalyticsProviderTester provider = new EMPAnalyticsProviderTester();
         provider.setApplicationContext(EMPRegistry.applicationContext());
 
         HashMap<String, String> parameters = new HashMap<>();
@@ -106,14 +106,13 @@ public class EMPAnalyticsProviderTest {
         Assert.assertTrue(provider.hasSinkInit);
         Assert.assertTrue("s12345".equals(provider.sessionId));
 
-        long waitStartTime = System.currentTimeMillis();
-        while(System.currentTimeMillis() - waitStartTime < MAX_WAIT_TIME_FOR_PAYLOAD) {
-            if(provider.payload == null) { //payload is assgned from a different thread.
-                Thread.sleep(1L); //Wait
-            } else {
-                break;
+        new Waiter() {
+            @Override
+            protected boolean isReady() {
+                return provider.payload != null;
             }
-        }
+        }.waitUntilReady(MAX_WAIT_TIME_FOR_PAYLOAD);
+
         Assert.assertNotNull("provider.payload is null (waited "+MAX_WAIT_TIME_FOR_PAYLOAD+" millis)",provider.payload);
         Assert.assertTrue("Playback.Created".equals(provider.payload.getJSONArray("Payload").getJSONObject(0).getString("EventType")));
         Assert.assertTrue("Device.Info".equals(provider.payload.getJSONArray("Payload").getJSONObject(1).getString("EventType")));

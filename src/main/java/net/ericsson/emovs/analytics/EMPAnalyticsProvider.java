@@ -7,7 +7,6 @@ import net.ericsson.emovs.exposure.auth.DeviceInfo;
 import net.ericsson.emovs.exposure.clients.exposure.ExposureClient;
 import net.ericsson.emovs.exposure.interfaces.IExposureCallback;
 import net.ericsson.emovs.exposure.utils.MonotonicTimeService;
-import net.ericsson.emovs.utilities.system.CheckRoot;
 import net.ericsson.emovs.utilities.errors.Error;
 import net.ericsson.emovs.utilities.system.RunnableThread;
 
@@ -66,6 +65,7 @@ public class EMPAnalyticsProvider {
     static String PLAYBACK_HEARTBEAT = "Playback.Heartbeat";
     static String PLAYBACK_PROGRAM_CHANGED = "Playback.ProgramChanged";
     static String PLAYBACK_DEVICE_INFO = "Device.Info";
+    private static final String PLAYBACK_DRM = "Playback.DRM";
     static final String DOWNLOAD_STARTED = "Playback.DownloadStarted";
     static final String DOWNLOAD_STOPPED = "Playback.DownloadStopped";
     static final String DOWNLOAD_PAUSED = "Playback.DownloadPaused";
@@ -290,6 +290,11 @@ public class EMPAnalyticsProvider {
         EventBuilder builder = new EventBuilder(PLAYBACK_ERROR, parameters);
         addEventToPool(sessionId, builder, false);
         changeSessionState(sessionId, SessionDetails.SESSION_STATE_DIRTY);
+    }
+
+    public void playbackDrm(String sessionId, Map<String, String> parameters) {
+        EventBuilder builder = new EventBuilder(PLAYBACK_DRM, parameters);
+        addEventToPool(sessionId, builder, false);
     }
 
     public void setCurrentTime(String sessionId, long currentTime) {

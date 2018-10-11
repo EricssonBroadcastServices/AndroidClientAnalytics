@@ -42,4 +42,13 @@ public class EventParameters {
         public final static String REFERENCE_TIME = "ReferenceTime";
         public final static String PLAY_MODE = "PlayMode";
     }
+
+    public static class Drm {
+        public static final String MESSAGE = "Message";
+        public static final String CODE = "Code";
+        public static final String INFO = "Info";
+
+        public static final String DRM_REQUEST_TYPE = "DrmExoRequestType";
+        public static final String DRM_DATA_LENGTH = "DrmExoDataLength";
+    }
 }

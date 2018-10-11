@@ -13,17 +13,17 @@ import java.util.Map;
  */
 
 public class EventBuilder {
-    JSONObject event;
+    private JSONObject event;
 
     public EventBuilder(String eventType) {
         init(eventType, null);
     }
 
-    public EventBuilder(String eventType, HashMap<String, String> parameters) {
+    public EventBuilder(String eventType, Map<String, String> parameters) {
         init(eventType, parameters);
     }
 
-    public void init(String eventType, HashMap<String, String> parameters) {
+    public void init(String eventType, Map<String, String> parameters) {
         this.event = new JSONObject();
         withProp("EventType", eventType);
         withProp("Timestamp", MonotonicTimeService.getInstance().currentTime());

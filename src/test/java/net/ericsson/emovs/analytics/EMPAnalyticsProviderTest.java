@@ -33,7 +33,7 @@ import java.util.HashMap;
 
 @RunWith(RobolectricTestRunner.class)
 public class EMPAnalyticsProviderTest {
-    private static final long MAX_WAIT_TIME_FOR_PAYLOAD = 1000L;
+    private static final long MAX_WAIT_TIME_FOR_PAYLOAD = 2000L;
 
     @Before
     public void setUp() throws Exception {

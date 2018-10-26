@@ -20,7 +20,6 @@ public class EventParameters {
         public final static String TECH_VERSION = "TechVersion";
         public final static String DEVICE_APP_INFO = "DeviceAppInfo";
         public final static String PLAY_MODE = "PlayMode";
-        public final static String REQUEST_ID = "RequestId";
     }
     public static class BitrateChanged {
         public final static String BITRATE = "Bitrate";

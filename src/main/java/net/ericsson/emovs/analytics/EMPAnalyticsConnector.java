@@ -95,7 +95,7 @@ public class EMPAnalyticsConnector extends AnalyticsPlaybackConnector {
         parameters.put(EventParameters.Created.AUTOPLAY, Boolean.toString(player().isAutoPlay()));
         parameters.put(EventParameters.Created.VERSION, player().getVersion());
         parameters.put(EventParameters.Created.PLAYER, player().getIdentifier());
-
+        parameters.put(EventParameters.Created.REQUEST_ID, player().getRequestId());
         EMPAnalyticsProvider.getInstance().created(sessionId, parameters);
     }
 

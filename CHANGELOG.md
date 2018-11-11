@@ -1,5 +1,10 @@
 # Release Notes
 
+## 2.0.95-1
+
+### Bug fixes
+- **analytics_test** fix analytics test
+
 ## 2.0.95
 
 ### Enhancements
